@@ -29,10 +29,9 @@ var NOT_SUPPORTED = 'The browser target is not supported: %target%';
 /**
  * Launches the specified browser with the given URL.
  * Based on https://github.com/domenic/opener
- * @param {{target: ?string, url: ?string, dataDir: ?string}} opts - parameters:
+ * @param {{target: ?string, url: ?string}} opts - parameters:
  *   target - the target browser - ie, chrome, safari, opera, firefox or chromium
  *   url - the url to open in the browser
- *   dataDir - a data dir to provide to Chrome (can be used to force it to open in a new window)
  * @return {Q} Promise to launch the specified browser
  */
 module.exports = function (opts) {
@@ -40,7 +39,7 @@ module.exports = function (opts) {
     var url = opts.url || '';
 
     target = target.toLowerCase();
-    return getBrowser(target, opts.dataDir).then(function (browser) {
+    return getBrowser(target).then(function (browser) {
         var args;
 
         var urlAdded = false;
@@ -86,28 +85,25 @@ module.exports = function (opts) {
     });
 };
 
-function getBrowser(target, dataDir) {
-    dataDir = dataDir || 'temp_chrome_user_data_dir_for_cordova';
-
-    var chromeArgs = ' --user-data-dir=/tmp/' + dataDir;
+function getBrowser(target) {
     var browsers = {
         'win32': {
             'ie': 'iexplore',
-            'chrome': 'chrome --user-data-dir=%TEMP%\\' + dataDir,
+            'chrome': 'chrome',
             'safari': 'safari',
             'opera': 'opera',
             'firefox': 'firefox',
             'edge': 'microsoft-edge'
         },
         'darwin': {
-            'chrome': '"Google Chrome" --args' + chromeArgs,
+            'chrome': '"Google Chrome"',
             'safari': 'safari',
             'firefox': 'firefox',
             'opera': 'opera'
         },
         'linux': {
-            'chrome': 'google-chrome' + chromeArgs,
-            'chromium': 'chromium-browser' + chromeArgs,
+            'chrome': 'google-chrome',
+            'chromium': 'chromium-browser',
             'firefox': 'firefox',
             'opera': 'opera'
         }
