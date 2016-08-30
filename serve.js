@@ -23,12 +23,14 @@ express = require('express'),
 server = require('./src/server'),
 middleware = require('./src/middleware');
 
-module.exports = function () {
-    return new CordovaServe();
+module.exports = function (opt) {
+    return new CordovaServe(opt);
 };
 
-function CordovaServe() {
+function CordovaServe(opt) {
     this.app = express();
+    this.views = opt.views;
+    this.sass = opt.sass;
 
     // Attach this before anything else to provide status output
     this.app.use(function (req, res, next) {
@@ -46,11 +48,8 @@ function CordovaServe() {
 
     // Turn on compression
     this.app.use(compression());
-    middleware(app, {
-	views:{
-	    path: path.join(__dirname, './www/templates/'),
-	    engine: 'pug',
-	},
+    middleware(this.app, {
+	views: this.views,
 	bodyParser:{
 	    json: true,
 	    urlencoded:{
@@ -59,8 +58,8 @@ function CordovaServe() {
 	},
 	cookieParser: true,
 	sass:{
-	    src: path.join(__dirname, './www/css/scss/'),
-	    dest: path.join(__dirname, './www/css/'),
+	    src: this.sass.src,
+	    dest: this.sass.dest,
 	    indentedSyntax: true,
 	    sourceMap: true,
 	    debug: true,
