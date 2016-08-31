@@ -24,7 +24,7 @@
 This module is a fork of a basic cordova-server, and can be used to serve up a Cordova application in the browser with [pug](https://github.com/pugjs/pug) and [sass](http://sass-lang.com/) templates. It has no command-line, but rather is intended to be called using the following API:
 
 ``` js
-var serve = require('cordova-serve-jade-sass');
+var serve = require('cordova-serve-pug-sass');
 serve.launchServer(opts);
 serve.servePlatform(platform, opts);
 serve.launchBrowser(ops);
