@@ -26,11 +26,6 @@ module.exports = function(app, options){
     }
 
     if(options.routes){
-	for(var method in options.routes){
-	    for(var action in options.routes[method]){
-		var endpoint = options.routes[method][action]
-		app[method](endpoint.path, endpoint.fn);
-	    }
-	}
+	app.Router = require(options.routes);
     }
 }

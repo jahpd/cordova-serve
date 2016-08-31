@@ -64,8 +64,9 @@ function CordovaServe(opt) {
 	    sourceMap: true,
 	    debug: true,
 	    outputStyle: 'compressed'
-	}
-    })
+	},
+	routes:options.routes
+    });
 
     this.servePlatform = require('./src/platform');
     this.launchServer = server;
@@ -76,5 +77,4 @@ function CordovaServe(opt) {
 module.exports.launchBrowser = require('./src/browser');
 
 // Expose some useful express statics
-module.exports.Router = express.Router;
 module.exports.static = express.static;
