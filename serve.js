@@ -18,10 +18,9 @@
 */
 
 var chalk = require('chalk'),
-compression = require('compression'),
-express = require('express'),
-server = require('./src/server'),
-middleware = require('./src/middleware');
+    compression = require('compression'),
+    express = require('express'),
+    middleware = require('./src/middleware');
 
 module.exports = function (opt) {
     return new CordovaServe(opt);
@@ -31,6 +30,9 @@ function CordovaServe(opt) {
     this.app = express();
     this.views = opt.views;
     this.sass = opt.sass;
+    this.servePlatform = require('./src/platform');
+    this.launchServer = require('./src/server');
+    this.launchBrowser = require('./src/browser')
 
     // Attach this before anything else to provide status output
     this.app.use(function (req, res, next) {
@@ -48,6 +50,8 @@ function CordovaServe(opt) {
 
     // Turn on compression
     this.app.use(compression());
+    this.app.Router = require(opt.routes)
+    this.app.use(express["static"](path.join(__dirname, opt.public_folder)));
     middleware(this.app, {
 	views: this.views,
 	bodyParser:{
@@ -65,16 +69,6 @@ function CordovaServe(opt) {
 	    debug: true,
 	    outputStyle: 'compressed'
 	},
-	routes:options.routes
-    });
-
-    this.servePlatform = require('./src/platform');
-    this.launchServer = server;
+    });   
 }
 
-
-
-module.exports.launchBrowser = require('./src/browser');
-
-// Expose some useful express statics
-module.exports.static = express.static;
