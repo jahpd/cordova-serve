@@ -20,23 +20,18 @@
 var chalk = require('chalk'),
     compression = require('compression'),
     express = require('express'),
-    middleware = require('./src/middleware'),
-    path = require('path')
+    path = require('path');
+    
 
 
-module.exports = function (opt, fn) {
-    var server = new CordovaServe(opt);
-    if(fn !== undefined){
-	fn(server.app.Router);
-    }
-    return server
+module.exports = function (opt) {
+    return new CordovaServe(opt);
 };
 
 function CordovaServe(opt) {
     this.app = express();
     this.servePlatform = require('./src/platform');
     this.launchServer = require('./src/server');
-    this.launchBrowser = require('./src/browser')
 
     // Attach this before anything else to provide status output
     this.app.use(function (req, res, next) {
@@ -51,31 +46,6 @@ function CordovaServe(opt) {
         });
         next();
     });
-
-    // Turn on compression
-    this.app.use(compression());
-    
-    // Static path
-    this.app.use(express["static"](path.join(__dirname, opt.public_folder)));
-
-    // Pug and sass
-    middleware(this.app, {
-	views: this.views,
-	bodyParser:{
-	    json: true,
-	    urlencoded:{
-		extended: false
-	    }
-	},
-	cookieParser: false,
-	sass:{
-	    src: this.sass.src,
-	    dest: this.sass.dest,
-	    indentedSyntax: true,
-	    sourceMap: true,
-	    debug: true,
-	    outputStyle: 'compressed'
-	},
-    }); 
 }
 
+module.exports.launchBrowser = require('./src/browser');

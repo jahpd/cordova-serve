@@ -17,9 +17,12 @@
  under the License.
  */
 
-var chalk   = require('chalk'),
-    express = require('express'),
-    Q       = require('q');
+var chalk      = require('chalk'),
+    express    = require('express'),
+    Q          = require('q'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+    sass = require('node-sass-middleware');
 
 /**
  * @desc Launches a server with the specified options and optional custom handlers.
@@ -48,6 +51,31 @@ module.exports = function (opts) {
 
     if (opts.router) {
         app.use(opts.router);
+    }
+
+    // Turn on compression
+    this.app.use(compression());
+
+    // Pug and sass
+    if(options.views){
+	app.set('views', options.views.path);
+	app.set('view engine', options.views.engine);
+    }
+    if(options.bodyParser){
+	if(options.bodyParser.json){
+	    app.use(bodyParser.json());
+	}
+	if(options.bodyParser.urlencoded){
+	    app.use(bodyParser.urlencoded(options.bodyParser.urlencoded));
+	}
+    }
+
+    if(options.cookieParser){
+	app.use(cookieParser());
+    }
+
+    if(options.sass){
+	app.use(sass(options.sass));
     }
 
     if (opts.root) {
