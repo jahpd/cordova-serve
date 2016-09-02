@@ -21,16 +21,13 @@ var chalk = require('chalk'),
     compression = require('compression'),
     express = require('express'),
     path = require('path');
-    
 
-
-module.exports = function (opt) {
-    return new CordovaServe(opt);
+module.exports = function () {
+    return new CordovaServe();
 };
 
-function CordovaServe(opt) {
+function CordovaServe() {
     this.app = express();
-    this.servePlatform = require('./src/platform');
     this.launchServer = require('./src/server');
 
     // Attach this before anything else to provide status output
@@ -48,4 +45,5 @@ function CordovaServe(opt) {
     });
 }
 
+module.exports.servePlatform = require('./src/platform');
 module.exports.launchBrowser = require('./src/browser');
