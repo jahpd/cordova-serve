@@ -33,9 +33,9 @@ module.exports = function (opts) {
     var deferred = Q.defer();
 
     opts = opts || {};
-    var port = opts.port || 8000;
+    this.port = opts.port || 8000;
 
-    var log = module.exports.log = function (msg) {
+    this.log = module.exports.log = function (msg) {
         if (!opts.noLogOutput) {
             if (opts.events) {
                 opts.events.emit('log', msg);
@@ -54,7 +54,7 @@ module.exports = function (opts) {
     }
 
     // Turn on compression
-    this.app.use(compression());
+    app.use(compression());
 
     // Pug and sass
     if(options.views){

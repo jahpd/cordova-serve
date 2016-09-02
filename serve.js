@@ -29,6 +29,7 @@ module.exports = function() {
     this.launchBrowser = require('./src/browser');
 
     // Attach this before anything else to provide status output
+    var that = this
     this.app.use(function (req, res, next) {
         res.on('finish', function () {
             var color = this.statusCode == '404' ? chalk.red : chalk.green;
@@ -37,7 +38,7 @@ module.exports = function() {
             if (encoding) {
                 msg += chalk.gray(' (' + encoding + ')');
             }
-            server.log(msg);
+            that.log(msg);
         });
         next();
     });
