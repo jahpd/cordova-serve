@@ -29,6 +29,8 @@ module.exports = function () {
 function CordovaServe() {
     this.app = express();
     this.launchServer = require('./src/server');
+    this.servePlatform = require('./src/platform');
+    this.launchBrowser = require('./src/browser');
 
     // Attach this before anything else to provide status output
     this.app.use(function (req, res, next) {
@@ -45,5 +47,4 @@ function CordovaServe() {
     });
 }
 
-module.exports.servePlatform = require('./src/platform');
-module.exports.launchBrowser = require('./src/browser');
+
