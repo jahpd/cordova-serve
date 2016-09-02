@@ -22,11 +22,7 @@ var chalk = require('chalk'),
     express = require('express'),
     path = require('path');
 
-module.exports = function () {
-    return new CordovaServe();
-};
-
-function CordovaServe() {
+module.exports = function() {
     this.app = express();
     this.launchServer = require('./src/server');
     this.servePlatform = require('./src/platform');
