@@ -8,12 +8,6 @@ path = require('path')
 bodyParser = require('body-parser')
 logger = require('./src/logger')
 
-module.exports = (conf) -> new CordovaServe conf
-
-CordovaServe::servePlatform = require('./src/platform')
-CordovaServe::prototype.launchServer  = require('./src/server')
-CordovaServe::prototype.launchBrowser = require('./src/browser')
-
 class CordovaServe
         constructor: (conf) ->
                 @app = express()
@@ -46,9 +40,8 @@ class CordovaServe
 
                 # pasta public
                 @app.use express.static(@app.get('public path'))
-                
-                
-                
 
+CordovaServe.prototype[k] = require(path.join(__dirname,v)) for k,v of {'servePlatform': 'src/platform', 'launchServer':  'src/server', 'launchBrowser': 'src/browser'}
 
+module.exports = (conf) -> new CordovaServe conf
 
