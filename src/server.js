@@ -17,12 +17,9 @@
  under the License.
  */
 
-var chalk      = require('chalk'),
-    express    = require('express'),
-    Q          = require('q'),
-    cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser'),
-    sass = require('node-sass-middleware');
+var chalk   = require('chalk'),
+    express = require('express'),
+    Q       = require('q');
 
 /**
  * @desc Launches a server with the specified options and optional custom handlers.
@@ -33,9 +30,9 @@ module.exports = function (opts) {
     var deferred = Q.defer();
 
     opts = opts || {};
-    this.port = opts.port || 8000;
+    var port = opts.port || 8000;
 
-    this.log = module.exports.log = function (msg) {
+    var log = module.exports.log = function (msg) {
         if (!opts.noLogOutput) {
             if (opts.events) {
                 opts.events.emit('log', msg);
@@ -48,40 +45,6 @@ module.exports = function (opts) {
     var app = this.app;
     var server = require('http').Server(app);
     this.server = server;
-
-    if (opts.router) {
-        app.use(opts.router);
-    }
-
-    // Turn on compression
-    app.use(compression());
-
-    // Pug and sass
-    if(options.views){
-	app.set('views', options.views.path);
-	app.set('view engine', options.views.engine);
-    }
-    if(options.bodyParser){
-	if(options.bodyParser.json){
-	    app.use(bodyParser.json());
-	}
-	if(options.bodyParser.urlencoded){
-	    app.use(bodyParser.urlencoded(options.bodyParser.urlencoded));
-	}
-    }
-
-    if(options.cookieParser){
-	app.use(cookieParser());
-    }
-
-    if(options.sass){
-	app.use(sass(options.sass));
-    }
-
-    if (opts.root) {
-        this.root = opts.root;
-        app.use(express.static(opts.root));
-    }
 
     var that = this;
     server.listen(port).on('listening', function () {
