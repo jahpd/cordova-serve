@@ -6,40 +6,50 @@ express = require('express')
 assets = require("connect-assets")
 path = require('path')
 bodyParser = require('body-parser')
-logger = require('./src/logger')
+chalk = require('chalk')
 
 class CordovaServe
         constructor: (conf) ->
                 @app = express()
-                        
-                #Pug templates
-                @app.set 'view engine', 'pug'
-                @app.set "#{k} path", path.join(__dirname, v) for k,v of a for a of conf.public
-                @app.set "#{k}",      path.join(__dirname, v) for k,v of a for a of conf.server
-
-                # rotas e endpoints internos
-                @app.use(require(@app.get('cordova routes')))	 # hack this file with scrpts/routes.js
-                
-                #favicon
-                @app.use(favicon(@app.get('favicon path')))
 
                 #logger
-                @app.use(logger())
+                @app.use (req, res, next) ->
+                        res.on 'finish', ->
+                                color = if @statusCode is '404' then chalk.red else chalk.green
+                                msg = color(@statusCode) + ' ' + @req.originalUrl;
+                                encoding = @._headers && @._headers['content-encoding']
+                                if encoding
+                                        msg += chalk.gray(' (' + encoding + ')')
+                                        console.log(msg)
+                        next()
 
+                # html engine
+                @app.set "view engine", conf["view engine"]
+
+                @app.set "views", path.join(__dirname, conf.root, conf["views"])
+                
                 # comprime html
-                @app.use(compression())
+                @app.use compression()
+                
+                #favicon
+                @app.use favicon path.join(__dirname, conf.root, conf["favicon"])
+
+                # assets
+                # compila *.scss e *.coffeescript para index.css e demais javascripts
+                paths = paths: (path.join(__dirname, conf.root,v) for v in conf["assets"])
+                @app.use assets(paths)
 
                 # JSON parser
-                @app.use(bodyParser.json())
+                @app.use bodyParser.json()
 
                 # Urls codificadas
-                @app.use(bodyParser.urlencoded({ extended: false }))
-
-                # compila *.scss e *.coffeescript para index.css e demais javascripts
-                @app.use(assets(paths:@app.get "#{s} path" for s in ["css","js","img","public"]))
+                @app.use bodyParser.urlencoded(extended: false)
 
                 # pasta public
-                @app.use express.static(@app.get('public path'))
+                @app.use express.static path.join(__dirname, conf.root, conf["public"])
+
+                #Rotas
+                @app.use require path.join(__dirname, conf.root, conf["routes"]) 
 
 CordovaServe.prototype[k] = require(path.join(__dirname,v)) for k,v of {'servePlatform': 'src/platform', 'launchServer':  'src/server', 'launchBrowser': 'src/browser'}
 

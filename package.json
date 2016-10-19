@@ -33,6 +33,7 @@
     "jshint": "^2.8.0"
   },
   "scripts": {
+    "test": "coffee --bare --map -o ./ -c serve.coffee ; node ./test/index.js",
     "jshint": "node node_modules/jshint/bin/jshint src"
   },
   "engines": {

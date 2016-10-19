@@ -1,0 +1,13 @@
+{
+    "root": "test",
+    "view engine": "pug",
+    "routes": "routes",
+    "favicon":"www/favicon.ico",
+    "public":"www",
+    "views": "www/templates",
+    "assets":[	
+	"www/css",
+	"www/js",
+	"www/img"
+    ]
+}
